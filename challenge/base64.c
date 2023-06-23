@@ -64,11 +64,6 @@ char *base64_encode(char input[], size_t input_length, size_t *output_length)
 char *base64_url_encode(char input[], size_t input_length, size_t *output_length)
 {
     char *result = base64_encode(input, input_length, output_length);
-    if (result == NULL)
-    {
-        printf("Failed to allocate memory for result.\n");
-        return NULL;
-    }
 
     for (int i = 0; i < *output_length; i++)
     {
@@ -91,16 +86,26 @@ char *base64_url_encode(char input[], size_t input_length, size_t *output_length
     return result;
 }
 
+char *base64_filename_encode(char input[], size_t input_length, size_t *output_length)
+{
+    char *result = base64_encode(input, input_length, output_length);
+
+    for (int i = 0; i < *output_length; i++)
+    {
+        if (result[i] == '/')
+        {
+            result[i] = '-';
+        }
+    }
+
+    return result;
+}
+
 int main()
 {
     size_t output_length = 0;
     char *input;
     input = malloc(1024 * sizeof(char));
-    if (input == NULL)
-    {
-        printf("Failed to allocate memory for result.\n");
-        return 0;
-    }
 
     printf("input: ");
     scanf("%s", input);
