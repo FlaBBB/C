@@ -10,7 +10,7 @@ static char DICT[] = {
 
 void encode(char input[], char* encoded) {
     int pad, len, temp, last_in, j;
-    char result[200];
+    char result[201];
     last_in = 0;
     pad = 0;
     len = strlen(input);
@@ -18,18 +18,13 @@ void encode(char input[], char* encoded) {
     for(int i = 0; i < len; i++){
         temp = 0;
         if(last_in != 0){
-            temp += ((last_in) & ((3 << (2 * (pad - 1))) | 2)) << (6 - (2 * pad));
-            printf("%x\n", (last_in & ((3 << (2 * (pad - 1))) | 3)));
-            printf("%x\n", temp);
-            printf("%x\n", (int)input[i] >> (2 * (pad + 1)));
+            temp += ((last_in) & ((3 << (2 * (pad - 1))) | 3)) << (6 - (2 * pad));
         }
         pad++;
         temp += (int)input[i] >> (2 * pad);
-        result[j] = DICT[temp];
-        j++;
+        result[j++] = DICT[temp];
         if(pad == 3){
-            result[j] = DICT[(int)input[i] & 63];
-            j++;
+            result[j++] = DICT[(int)input[i] & 63];
             last_in = 0;
             pad = 0;
         }else{
@@ -39,13 +34,10 @@ void encode(char input[], char* encoded) {
 
     if(last_in != 0){
         temp = (last_in & ((3 << (2 * (pad - 1))) | 3)) << (6 - (2 * pad));
-        result[j] = DICT[temp];
-        j++;
-        result[j] = '=';
-        j++;
+        result[j++] = DICT[temp];
+        result[j++] = '=';
         if(pad == 1){
-            result[j] = '=';
-            j++;
+            result[j++] = '=';
         }
     }
     result[j] = '\0';
@@ -53,11 +45,11 @@ void encode(char input[], char* encoded) {
 }
 
 int main() {
-    char input[100];
-    puts("input: ");
-    scanf("%99s", input);
+    char input[101];
+    printf("input: ");
+    scanf("%100s", input);
     char encoded[200];
     encode(input, encoded);
-    printf("\nencoded: %s", encoded);
+    printf("encoded: %s", encoded);
     return 0;
 }
