@@ -17,7 +17,7 @@ char *base64_encode(char input[], size_t input_length, size_t *output_length)
     if (result == NULL)
     {
         printf("Failed to allocate memory for result.\n");
-        return NULL; // Or handle the error in an appropriate way
+        return NULL;
     }
     j = 0;
     for (int i = 0; i < input_length; i++)
@@ -59,11 +59,22 @@ char *base64_encode(char input[], size_t input_length, size_t *output_length)
 int main()
 {
     size_t output_length = 0;
-    char input[101];
+    char *input;
+    input = malloc(1024 * sizeof(char));
+    if (input == NULL)
+    {
+        printf("Failed to allocate memory for result.\n");
+        return NULL;
+    }
+
     printf("input: ");
-    scanf("%100s", input);
+    scanf("%s", input);
+
     char *encoded = base64_encode(input, strlen(input), &output_length);
     printf("encoded: %s", encoded);
+
+    free(input);
     free(encoded);
+
     return 0;
 }
