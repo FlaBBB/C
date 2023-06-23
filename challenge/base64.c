@@ -12,24 +12,29 @@ char *base64_encode(char input[], size_t input_length, size_t *output_length)
     int pad, temp, last_in, j;
     last_in = 0;
     pad = 0;
-    *output_length = ((input_length + 2) / 3) * 4 + 1;
-    char *result = malloc(*output_length);
+    j = 0;
+
+    *output_length = ((input_length + 2) / 3) * 4;
+    char *result = malloc(*output_length + 1);
     if (result == NULL)
     {
         printf("Failed to allocate memory for result.\n");
         return NULL;
     }
-    j = 0;
+
     for (int i = 0; i < input_length; i++)
     {
         temp = 0;
+
         if (last_in != 0)
         {
-            temp += ((last_in) & ((3 << (2 * (pad - 1))) | 3)) << (6 - (2 * pad));
+            temp += (last_in & ((3 << (2 * (pad - 1))) | 3)) << (6 - (2 * pad));
         }
+
         pad++;
         temp += (int)input[i] >> (2 * pad);
         result[j++] = DICT[temp];
+
         if (pad == 3)
         {
             result[j++] = DICT[(int)input[i] & 63];
@@ -56,6 +61,36 @@ char *base64_encode(char input[], size_t input_length, size_t *output_length)
     return result;
 }
 
+char *base64_url_encode(char input[], size_t input_length, size_t *output_length)
+{
+    char *result = base64_encode(input, input_length, output_length);
+    if (result == NULL)
+    {
+        printf("Failed to allocate memory for result.\n");
+        return NULL;
+    }
+
+    for (int i = 0; i < *output_length; i++)
+    {
+        if (result[i] == '+')
+        {
+            result[i] = '-';
+        }
+        else if (result[i] == '/')
+        {
+            result[i] = '_';
+        }
+        else if (result[i] == '=')
+        {
+            result[i] = '\0';
+            *output_length = i;
+            break;
+        }
+    }
+
+    return result;
+}
+
 int main()
 {
     size_t output_length = 0;
@@ -64,13 +99,13 @@ int main()
     if (input == NULL)
     {
         printf("Failed to allocate memory for result.\n");
-        return NULL;
+        return 0;
     }
 
     printf("input: ");
     scanf("%s", input);
 
-    char *encoded = base64_encode(input, strlen(input), &output_length);
+    char *encoded = base64_url_encode(input, strlen(input), &output_length);
     printf("encoded: %s", encoded);
 
     free(input);
