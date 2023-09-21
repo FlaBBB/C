@@ -9,8 +9,8 @@ static char DICT[] = {
 
 char *base64_encode(char input[], size_t input_length, size_t *output_length)
 {
-    int pad, temp, last_in, j;
-    last_in = 0;
+    int pad, temp, last_input, j;
+    last_input = 0;
     pad = 0;
     j = 0;
 
@@ -26,9 +26,9 @@ char *base64_encode(char input[], size_t input_length, size_t *output_length)
     {
         temp = 0;
 
-        if (last_in != 0)
+        if (last_input != 0)
         {
-            temp += (last_in & ((3 << (2 * (pad - 1))) | 3)) << (6 - (2 * pad));
+            temp += (last_input & ((3 << (2 * (pad - 1))) | 3)) << (6 - (2 * pad));
         }
 
         pad++;
@@ -38,18 +38,18 @@ char *base64_encode(char input[], size_t input_length, size_t *output_length)
         if (pad == 3)
         {
             result[j++] = DICT[(int)input[i] & 63];
-            last_in = 0;
+            last_input = 0;
             pad = 0;
         }
         else
         {
-            last_in = (int)input[i];
+            last_input = (int)input[i];
         }
     }
 
-    if (last_in != 0)
+    if (last_input != 0)
     {
-        temp = (last_in & ((3 << (2 * (pad - 1))) | 3)) << (6 - (2 * pad));
+        temp = (last_input & ((3 << (2 * (pad - 1))) | 3)) << (6 - (2 * pad));
         result[j++] = DICT[temp];
         result[j++] = '=';
         if (pad == 1)
@@ -57,7 +57,9 @@ char *base64_encode(char input[], size_t input_length, size_t *output_length)
             result[j++] = '=';
         }
     }
+    
     result[*output_length - 1] = '\0';
+
     return result;
 }
 
@@ -110,7 +112,7 @@ int main()
     printf("input: ");
     scanf("%s", input);
 
-    char *encoded = base64_url_encode(input, strlen(input), &output_length);
+    char *encoded = base64_encode(input, strlen(input), &output_length);
     printf("encoded: %s", encoded);
 
     free(input);
