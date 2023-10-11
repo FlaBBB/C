@@ -89,7 +89,7 @@ int main()
 
     printf("Give me input, I will encode it: ");
     scanf("%s", input);
-    printf("%d\n", strlen(input));
+    // printf("%d\n", strlen(input));
 
     printf("output: %s\n\n", encode(input));
     free(input);
