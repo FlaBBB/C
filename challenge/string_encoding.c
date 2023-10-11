@@ -76,7 +76,6 @@ char *encode(char input[])
         decimalToHex((int)input[i] - last, temp);
         last = (int)input[i];
         strncat(result, temp, 2);
-        free(temp);
     }
 
     return result;
@@ -89,7 +88,6 @@ int main()
 
     printf("Give me input, I will encode it: ");
     scanf("%s", input);
-    // printf("%d\n", strlen(input));
 
     printf("output: %s\n\n", encode(input));
     free(input);
